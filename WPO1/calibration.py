@@ -101,10 +101,10 @@ def plot (image, pts, origin, axes):
     plt.show()
 
 
-def main():
+def main(NAME):
     a = get_points("calibration_points3.txt")
-    #store_click(get_path("right.jpg"), "right.txt")
-    x = get_points("right.txt", output=True)
+    store_click(get_path(NAME+".jpg"), NAME+".txt")
+    x = get_points(NAME+".txt", output=True)
     m = compute_m(a, x)
     # re-find axes and points
     origin = get_2D_from_3D(m, [0, 0, 0, 1])
@@ -114,11 +114,12 @@ def main():
     pts_refined = []
     for i in range(a.shape[0]):
         pts_refined.append(get_2D_from_3D(m, [a[i, 0], a[i, 1], a[i, 2], 1]))
-    np.savetxt(get_path("right_reconstruction.txt", output=True, overwritte=True), pts_refined)
-    image = get_path("right.jpg")
+    np.savetxt(get_path(NAME+"_reconstruction.txt", output=True, overwritte=True), pts_refined)
+    image = get_path(NAME+".jpg")
     plot(image, pts_refined, origin, [axe_x, axe_y, axe_z])
 
 
-main()
+NAME = "left"
+main(NAME)
 
 
