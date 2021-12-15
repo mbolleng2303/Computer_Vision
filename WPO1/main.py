@@ -12,5 +12,17 @@ def print_hi(name):
 # Press the green button in the gutter to run the script.
 if __name__ == '__main__':
     print_hi('PyCharm')
-
+    NAME = "right"
+    if first_run:
+        store_click(get_path(NAME + ".jpg"), NAME + ".txt")
+    else:
+        xr, mr = calibration(NAME)
+    NAME = "left"
+    if first_run:
+        store_click(get_path(NAME + ".jpg"), NAME + ".txt")
+    else:
+        xl, ml = calibration(NAME)
+    if not first_run:
+        compute_a(mr, ml, xr, xl)
+        print(points_3d)
 # See PyCharm help at https://www.jetbrains.com/help/pycharm/

@@ -101,25 +101,66 @@ def plot (image, pts, origin, axes):
     plt.show()
 
 
-def main(NAME):
+def calibration(NAME):
     a = get_points("calibration_points3.txt")
-    store_click(get_path(NAME+".jpg"), NAME+".txt")
+    #store_click(get_path(NAME+".jpg"), NAME+".txt")
     x = get_points(NAME+".txt", output=True)
+    x = x[0:12]
     m = compute_m(a, x)
     # re-find axes and points
+    axe_length = 70
     origin = get_2D_from_3D(m, [0, 0, 0, 1])
-    axe_x = get_2D_from_3D(m, [200, 0, 0, 1])
-    axe_y = get_2D_from_3D(m, [0, 200,  0, 1])
-    axe_z = get_2D_from_3D(m, [0, 0, 200, 1])
+    axe_x = get_2D_from_3D(m, [axe_length, 0, 0, 1])
+    axe_y = get_2D_from_3D(m, [0, axe_length,  0, 1])
+    axe_z = get_2D_from_3D(m, [0, 0, axe_length, 1])
     pts_refined = []
     for i in range(a.shape[0]):
         pts_refined.append(get_2D_from_3D(m, [a[i, 0], a[i, 1], a[i, 2], 1]))
     np.savetxt(get_path(NAME+"_reconstruction.txt", output=True, overwritte=True), pts_refined)
     image = get_path(NAME+".jpg")
     plot(image, pts_refined, origin, [axe_x, axe_y, axe_z])
+    return m
 
 
-NAME = "left"
-main(NAME)
+def get_param(m):
+    m1, m2, m3 = m[0, 0:3], m[1, 0:3], m[2, 0:3]
+
+    cx, cy = np.dot(m1, m3), np.dot(m2, m3)
+    fx, fy = np.linalg.norm(np.cross(m1, m3)), np.linalg.norm(np.cross(m2, m3))
+    r1, r2, r3 = (m1 - cx * m3) / fx, (m2 - cy * m3) / fy, m3
+    tx, ty, tz = (m[0, 3] - cx * m[2, 3]) / fx, (m[1, 3] - cy * m[2, 3]) / fy, m[2, 3]
+
+    T = np.array([tx, ty, tz])
+    R = np.array([r1, r2, r3])
+    A = np.array([[R[0][0], R[0][1], R[0][2], T[0]],
+                  [R[1][0], R[1][1], R[1][2], T[1]],
+                  [R[2][0], R[2][1], R[2][2], T[2]],
+                  [0, 0, 0, 1]])
+
+    s = 0
+    intrinsics = np.array([[fx, s, cx], [0, fy, cy], [0, 0, 1]])
+    projection = np.array([[1, 0, 0, 0], [0, 1, 0, 0], [0, 0, 1, 0]])
+    K = np.matmul(intrinsics, projection)
+    M = np.matmul(K, A)
+
+    assert M.all() == m.all(), "problem !"
+    print("T=", T)
+    print("\n")
+    print("R=", R)
+    print("\n")
+    print("A=", A)
+    print("\n")
+    print("K=", K)
+    print("\n")
+    print("m=", m, "\n M= \n", M)
+    return T, R, A, K, M
+
+
+if __name__ == "__main__":
+    NAME = "right"
+    m = calibration(NAME)
+    T, R, A, K, M = get_param(m)
+
+
 
 
