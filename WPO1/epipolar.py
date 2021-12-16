@@ -109,7 +109,6 @@ def plot_cube(index_i):
 
 
 def plot_structure():
-    a =points_3d
     Z = np.zeros([6, 3])
     Z[0, :] = np.array([0, 0, 0])
     Z[1, :] = np.array([0, 0, points_3d[11, 2]])
@@ -218,7 +217,8 @@ def get_param(m):
     print("m=", m, "\n M= \n", M)
     return T, R, A, K, M
 
-def plot (image, pts, origin, axes):
+
+def plot(image, pts, origin, axes):
     im = img.imread(image)
     plt.imshow(im)
     pts = np.array(pts)
@@ -232,7 +232,7 @@ def plot (image, pts, origin, axes):
     plt.show()
 
 
-def is_paralelle (d_in, d_out):
+def is_paralelle(d_in, d_out):
     temp = np.zeros([3,2])
     for i in range(d_in.shape[0]):
         temp[i, :] = d_out[i]-d_in[i]
@@ -241,6 +241,7 @@ def is_paralelle (d_in, d_out):
         return False
     else:
         return True
+
 
 def auto_calibration(NAME, screen=True):
     a = get_points("calibration_points3.txt")
@@ -272,6 +273,8 @@ def auto_calibration(NAME, screen=True):
         plot(image, pts_refined, d_in, d_end)
     is_paralelle(d_in, d_end)
     return x, m
+
+
 if __name__ == "__main__":
     # set first = True to re-take the points manually
     NAME = "right"
