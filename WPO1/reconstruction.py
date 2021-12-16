@@ -222,7 +222,7 @@ if __name__ == "__main__":
     # set first = True to re-take the points manually
     first = False
     # set show_calibration = True to visualize the axes resulting from calibration
-    show_calibration = False
+    show_calibration = True
     ml, mr = reconstruction(first, show_calibration)
     plot_3d()
     # Values of interest
