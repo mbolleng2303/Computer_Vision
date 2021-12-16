@@ -89,7 +89,7 @@ def get_2D_from_3D(m, axis):
     return [x, y]
 
 
-def plot (image, pts, origin, axes):
+def plot(image, pts, origin, axes):
     im = img.imread(image)
     plt.imshow(im)
     pts = np.array(pts)
@@ -101,9 +101,10 @@ def plot (image, pts, origin, axes):
     plt.show()
 
 
-def calibration(NAME):
+def calibration(NAME, first=False):
     a = get_points("calibration_points3.txt")
-    #store_click(get_path(NAME+".jpg"), NAME+".txt")
+    if first :
+        store_click(get_path(NAME+".jpg"), NAME+".txt")
     x = get_points(NAME+".txt", output=True)
     x = x[0:12]
     m = compute_m(a, x)
@@ -156,10 +157,25 @@ def get_param(m):
     return T, R, A, K, M
 
 
+    def mse(result, target):
+        res = 0
+        n = len(target)
+        for i in range(n):
+            res += abs(target[i] - result[i]) / n
+        return res
+
+
 if __name__ == "__main__":
-    NAME = "right"
-    m = calibration(NAME)
+    # set first = True to select manually the points by yourself
+    first = False
+    # set the name of the image that you want process
+    NAME = "right"  # "left"
+    m = calibration(NAME, first)
     T, R, A, K, M = get_param(m)
+
+
+
+
 
 
 
