@@ -1,23 +1,14 @@
 # Import required modules
 import cv2
+# import plotly.graph_objects as go
 import numpy as np
-import os
-import glob
-import matplotlib.pyplot as plt
-import matplotlib.image as img
-import cv2
-import numpy as np
-from matplotlib import pyplot as plt
-from scipy.ndimage.filters import convolve as filter2
 import scipy
-import os
-from pysteps.visualization import motion_plot, quiver, streamplot
-import math
+from matplotlib import pyplot as plt
 from sklearn.preprocessing import normalize
-#from wavepy.surface_from_grad import frankotchellappa
+
+# from wavepy.surface_from_grad import frankotchellappa
 from frankoChellappa import frankotchellappa
-import plotly.graph_objects as go
-import numpy as np
+
 
 def generate_mask(img):
     tresh = 0.1
@@ -199,7 +190,6 @@ if __name__ == "__main__":
     p, q = photometric_stereo(I, L, mask)
     show_surf_norm(p, q)
 
-
     z = frankotchellappa(p, q)
 
     # z = compute_depth(mask, n)
@@ -236,14 +226,3 @@ if __name__ == "__main__":
 
     fig.show()
     """
-
-
-
-
-
-
-
-
-
-
-
